@@ -12,7 +12,7 @@ const LoginScreen = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useAppDispatch();
-  const { isLoading, error } = useAppSelector(state => state.auth);
+  const { isLoading, error,user } = useAppSelector(state => state.auth);
 
   const handleLogin = async () => {
     if (!email || !password) {
