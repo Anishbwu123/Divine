@@ -9,9 +9,11 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
+import Toast from 'react-native-toast-message';
 import { store, persistor } from './src/store';
 import RootNavigator from './src/navigation/RootNavigator';
 import Loader from './src/components/common/Loader';
+import toastConfig from './src/config/toastConfig';
 
 
 const App = () => {
@@ -19,6 +21,7 @@ const App = () => {
     <Provider store={store}>
       <PersistGate loading={<Loader />} persistor={persistor}>
         <RootNavigator />
+        <Toast config={toastConfig} position="top" topOffset={50} />
       </PersistGate>
     </Provider>
   );

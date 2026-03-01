@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { loginUser } from '../authSlice';
@@ -12,11 +13,11 @@ const LoginScreen = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useAppDispatch();
-  const { isLoading, error,user } = useAppSelector(state => state.auth);
+  const { isLoading, error, user } = useAppSelector(state => state.auth);
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Error', 'Please fill all fields');
+      Toast.show({ type: 'error', text1: 'Error', text2: 'Please fill all fields' });
       return;
     }
     const result = await dispatch(loginUser({ email, pass: password }));
@@ -24,7 +25,7 @@ const LoginScreen = ({ navigation }: any) => {
     if (loginUser.fulfilled.match(result)) {
       // Navigation happens automatically via RootNavigator
     } else {
-      Alert.alert('Login Failed', result.payload as string);
+      Toast.show({ type: 'error', text1: 'Login Failed', text2: result.payload as string });
     }
   };
 

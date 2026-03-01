@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { authService } from '../authServices';
 import SafeWrapper from '../../../components/layout/SafeWrapper';
 import Input from '../../../components/common/Input';
 import Button from '../../../components/common/Button';
 import { colors, spacing } from '../../../theme';
-
 
 const SignUpScreen = ({ navigation }: any) => {
   const [name, setName] = useState('');
@@ -16,26 +16,41 @@ const SignUpScreen = ({ navigation }: any) => {
 
   const handleSignUp = async () => {
     if (!name || !email || !password || !confirmPass) {
-      Alert.alert('Error', 'Please fill all fields');
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Please fill all fields',
+      });
       return;
     }
     if (password !== confirmPass) {
-      Alert.alert('Error', 'Passwords do not match');
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Passwords do not match',
+      });
       return;
     }
     if (password.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters');
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Password must be at least 6 characters',
+      });
       return;
     }
 
     setLoading(true);
     try {
       await authService.signUp(email, password, name);
-      Alert.alert('Success!', 'Account created. Please check your email.', [
-        { text: 'OK', onPress: () => navigation.navigate('Login') },
-      ]);
+      Toast.show({
+        type: 'success',
+        text1: 'Success!',
+        text2: 'Account created. Please check your email.',
+      });
+      setTimeout(() => navigation.navigate('Login'), 1500);
     } catch (error: any) {
-      Alert.alert('Error', error.message);
+      Toast.show({ type: 'error', text1: 'Error', text2: error.message });
     } finally {
       setLoading(false);
     }
