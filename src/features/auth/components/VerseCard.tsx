@@ -8,9 +8,9 @@ import {
   Platform,
   UIManager,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { ChalisaVerse } from '../../../types';
 import { colors, spacing } from '../../../theme';
-
 
 if (Platform.OS === 'android') {
   UIManager.setLayoutAnimationEnabledExperimental?.(true);
@@ -29,6 +29,23 @@ const VerseCard: React.FC<Props> = ({ verse, isBookmarked, onBookmark }) => {
   const toggle = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setExpanded(!expanded);
+  };
+
+  const handleBookmark = () => {
+    if (isBookmarked) {
+      Toast.show({
+        type: 'info',
+        text1: 'Bookmark removed',
+        text2: `Verse #${verse.verse_number} removed`,
+      });
+    } else {
+      Toast.show({
+        type: 'success',
+        text1: 'Bookmarked! ⭐',
+        text2: `Verse #${verse.verse_number} saved`,
+      });
+    }
+    onBookmark();
   };
 
   return (
@@ -53,7 +70,7 @@ const VerseCard: React.FC<Props> = ({ verse, isBookmarked, onBookmark }) => {
             <Text style={styles.badgeText}>{isDoha ? 'दोहा' : 'चौपाई'}</Text>
           </View>
           <Text style={styles.verseNum}>#{verse.verse_number}</Text>
-          <TouchableOpacity onPress={onBookmark} style={styles.bookmarkBtn}>
+          <TouchableOpacity onPress={handleBookmark} style={styles.bookmarkBtn}>
             <Text style={styles.bookmarkIcon}>{isBookmarked ? '★' : '☆'}</Text>
           </TouchableOpacity>
         </View>

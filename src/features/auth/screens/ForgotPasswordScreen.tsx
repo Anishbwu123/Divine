@@ -3,46 +3,36 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { loginUser } from '../authSlice';
+import { supabase } from '../../../config/supabase';
 import SafeWrapper from '../../../components/layout/SafeWrapper';
 import Input from '../../../components/common/Input';
-import { colors, spacing } from '../../../theme';
 import Button from '../../../components/common/Button';
+import { colors, spacing } from '../../../theme';
 
-const loginSchema = Yup.object().shape({
+const forgotSchema = Yup.object().shape({
   email: Yup.string()
     .email('Please enter a valid email')
     .required('Email is required'),
-  password: Yup.string()
-    .min(6, 'Password must be at least 6 characters')
-    .required('Password is required'),
 });
 
-const LoginScreen = ({ navigation }: any) => {
-  const dispatch = useAppDispatch();
-  const { isLoading } = useAppSelector(state => state.auth);
-
+const ForgotPasswordScreen = ({ navigation }: any) => {
   const formik = useFormik({
-    initialValues: { email: '', password: '' },
-    validationSchema: loginSchema,
+    initialValues: { email: '' },
+    validationSchema: forgotSchema,
     onSubmit: async values => {
-      const result = await dispatch(
-        loginUser({ email: values.email, pass: values.password }),
-      );
-      if (loginUser.fulfilled.match(result)) {
+      try {
+        const { error } = await supabase.auth.resetPasswordForEmail(
+          values.email,
+        );
+        if (error) throw error;
         Toast.show({
           type: 'success',
-          text1: 'Welcome back! 🙏',
-          text2: 'Logged in successfully',
+          text1: 'Reset Link Sent! ✉️',
+          text2: 'Please check your email.',
         });
-      } else {
-        Toast.show({
-          type: 'error',
-          text1: 'Login Failed',
-          text2: result.payload as string,
-        });
+        setTimeout(() => navigation.navigate('Login'), 2000);
+      } catch (error: any) {
+        Toast.show({ type: 'error', text1: 'Error', text2: error.message });
       }
     },
   });
@@ -52,9 +42,11 @@ const LoginScreen = ({ navigation }: any) => {
       <View style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.emoji}>🙏</Text>
-          <Text style={styles.title}>Welcome Back</Text>
-          <Text style={styles.subtitle}>Login to continue your path</Text>
+          <Text style={styles.emoji}>🔒</Text>
+          <Text style={styles.title}>Forgot Password?</Text>
+          <Text style={styles.subtitle}>
+            Enter your email and we'll send you a reset link
+          </Text>
         </View>
 
         {/* Form */}
@@ -71,38 +63,20 @@ const LoginScreen = ({ navigation }: any) => {
                 : undefined
             }
           />
-          <Input
-            label="Password"
-            value={formik.values.password}
-            onChangeText={formik.handleChange('password')}
-            placeholder="Enter your password"
-            secureTextEntry
-            error={
-              formik.touched.password && formik.errors.password
-                ? formik.errors.password
-                : undefined
-            }
-          />
 
           <Button
-            title="Login"
+            title="Send Reset Link"
             onPress={() => formik.handleSubmit()}
-            loading={isLoading}
-          />
-
-          <Button
-            title="Create Account"
-            onPress={() => navigation.navigate('SignUp')}
-            variant="outline"
+            loading={formik.isSubmitting}
           />
         </View>
 
-        {/* Footer */}
+        {/* Back to Login */}
         <TouchableOpacity
-          style={styles.forgotButton}
-          onPress={() => navigation.navigate('ForgotPassword')}
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
         >
-          <Text style={styles.forgotText}>Forgot Password?</Text>
+          <Text style={styles.backText}>← Back to Login</Text>
         </TouchableOpacity>
       </View>
     </SafeWrapper>
@@ -132,18 +106,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.textSecondary,
     marginTop: spacing.xs,
+    textAlign: 'center',
+    paddingHorizontal: spacing.md,
   },
   form: {
     marginTop: spacing.lg,
   },
-  forgotButton: {
+  backButton: {
     alignItems: 'center',
     marginTop: spacing.md,
   },
-  forgotText: {
+  backText: {
     color: colors.primary,
     fontSize: 14,
   },
 });
 
-export default LoginScreen;
+export default ForgotPasswordScreen;
