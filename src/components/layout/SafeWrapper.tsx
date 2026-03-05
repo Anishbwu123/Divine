@@ -1,5 +1,5 @@
 import React from 'react';
-import {  StatusBar, StyleSheet } from 'react-native';
+import { StatusBar, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../theme';
 
@@ -15,7 +15,11 @@ const SafeWrapper: React.FC<SafeWrapperProps> = ({
   bgColor = colors.bgMain,
 }) => (
   <SafeAreaView style={[styles.container, { backgroundColor: bgColor }]}>
-    <StatusBar barStyle={barStyle} backgroundColor={bgColor} />
+    <StatusBar
+      barStyle={barStyle}
+      backgroundColor={bgColor}
+      translucent={bgColor === 'transparent'}
+    />
     {children}
   </SafeAreaView>
 );

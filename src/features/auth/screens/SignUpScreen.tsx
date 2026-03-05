@@ -1,5 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import Toast from 'react-native-toast-message';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -48,90 +56,175 @@ const SignUpScreen = ({ navigation }: any) => {
   });
 
   return (
-    <SafeWrapper>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.emoji}>📿</Text>
-          <Text style={styles.title}>Create Account</Text>
-          <Text style={styles.subtitle}>Start your spiritual journey</Text>
-        </View>
+    <ImageBackground
+      source={require('../../../assets/Images/hanuman_bg.png')}
+      style={styles.backgroundImage}
+    >
+      <View style={styles.overlay}>
+        <SafeWrapper bgColor="transparent" barStyle="light-content">
+          <KeyboardAvoidingView
+            style={styles.keyboardView}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+          >
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.scrollContainer}
+              keyboardShouldPersistTaps="handled"
+            >
+              <View style={styles.header}>
+                <Text style={styles.title}>Create Account</Text>
+                <Text style={styles.subtitle}>
+                  Start your spiritual journey
+                </Text>
+              </View>
 
-        <View style={styles.form}>
-          <Input
-            label="Full Name"
-            value={formik.values.name}
-            onChangeText={formik.handleChange('name')}
-            placeholder="Your name"
-            error={
-              formik.touched.name && formik.errors.name
-                ? formik.errors.name
-                : undefined
-            }
-          />
-          <Input
-            label="Email"
-            value={formik.values.email}
-            onChangeText={formik.handleChange('email')}
-            placeholder="Email"
-            keyboardType="email-address"
-            error={
-              formik.touched.email && formik.errors.email
-                ? formik.errors.email
-                : undefined
-            }
-          />
-          <Input
-            label="Password"
-            value={formik.values.password}
-            onChangeText={formik.handleChange('password')}
-            placeholder="Min 6 characters"
-            secureTextEntry
-            error={
-              formik.touched.password && formik.errors.password
-                ? formik.errors.password
-                : undefined
-            }
-          />
-          <Input
-            label="Confirm Password"
-            value={formik.values.confirmPassword}
-            onChangeText={formik.handleChange('confirmPassword')}
-            placeholder="Re-enter password"
-            secureTextEntry
-            error={
-              formik.touched.confirmPassword && formik.errors.confirmPassword
-                ? formik.errors.confirmPassword
-                : undefined
-            }
-          />
+              <View style={styles.formContainer}>
+                <View style={styles.inputWrapper}>
+                  <Text style={styles.inputLabel}>Full Name</Text>
+                  <Input
+                    label=""
+                    value={formik.values.name}
+                    onChangeText={formik.handleChange('name')}
+                    placeholder="Your name"
+                    error={
+                      formik.touched.name && formik.errors.name
+                        ? formik.errors.name
+                        : undefined
+                    }
+                  />
+                </View>
 
-          <Button
-            title="Sign Up"
-            onPress={() => formik.handleSubmit()}
-            loading={formik.isSubmitting}
-          />
-          <Button
-            title="Back to Login"
-            onPress={() => navigation.goBack()}
-            variant="outline"
-          />
-        </View>
+                <View style={styles.inputWrapper}>
+                  <Text style={styles.inputLabel}>Email</Text>
+                  <Input
+                    label=""
+                    value={formik.values.email}
+                    onChangeText={formik.handleChange('email')}
+                    placeholder="Email"
+                    keyboardType="email-address"
+                    error={
+                      formik.touched.email && formik.errors.email
+                        ? formik.errors.email
+                        : undefined
+                    }
+                  />
+                </View>
+
+                <View style={styles.inputWrapper}>
+                  <Text style={styles.inputLabel}>Password</Text>
+                  <Input
+                    label=""
+                    value={formik.values.password}
+                    onChangeText={formik.handleChange('password')}
+                    placeholder="Min 6 characters"
+                    secureTextEntry
+                    error={
+                      formik.touched.password && formik.errors.password
+                        ? formik.errors.password
+                        : undefined
+                    }
+                  />
+                </View>
+
+                <View style={styles.inputWrapper}>
+                  <Text style={styles.inputLabel}>Confirm Password</Text>
+                  <Input
+                    label=""
+                    value={formik.values.confirmPassword}
+                    onChangeText={formik.handleChange('confirmPassword')}
+                    placeholder="Re-enter password"
+                    secureTextEntry
+                    error={
+                      formik.touched.confirmPassword &&
+                      formik.errors.confirmPassword
+                        ? formik.errors.confirmPassword
+                        : undefined
+                    }
+                  />
+                </View>
+
+                <View style={styles.buttonSpacing} />
+
+                <Button
+                  title="Sign Up"
+                  onPress={() => formik.handleSubmit()}
+                  loading={formik.isSubmitting}
+                />
+                <Button
+                  title="Back to Login"
+                  onPress={() => navigation.goBack()}
+                  variant="outline"
+                />
+              </View>
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </SafeWrapper>
       </View>
-    </SafeWrapper>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: spacing.lg, justifyContent: 'center' },
-  header: { alignItems: 'center', marginBottom: spacing.xl },
-  emoji: { fontSize: 50, marginBottom: spacing.md },
-  title: { fontSize: 28, fontWeight: 'bold', color: colors.textPrimary },
-  subtitle: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    marginTop: spacing.xs,
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
-  form: { marginTop: spacing.lg },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+  },
+  keyboardView: {
+    flex: 1,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    padding: spacing.lg,
+    justifyContent: 'center',
+    paddingVertical: spacing.xxl,
+  },
+  header: { alignItems: 'center', marginBottom: spacing.xl },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#EEEEEE',
+    marginTop: spacing.xs,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+  },
+  formContainer: {
+    marginTop: spacing.lg,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    padding: spacing.lg,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  inputWrapper: {
+    marginBottom: -10,
+  },
+  buttonSpacing: {
+    height: spacing.sm,
+  },
+  inputLabel: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+    marginBottom: 4,
+    marginLeft: 4,
+    fontSize: 14,
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 1,
+  },
 });
 
 export default SignUpScreen;
