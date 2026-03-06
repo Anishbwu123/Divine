@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   ImageBackground,
   ScrollView,
   KeyboardAvoidingView,
@@ -18,28 +17,36 @@ import Input from '../../../components/common/Input';
 import Button from '../../../components/common/Button';
 import { colors, spacing } from '../../../theme';
 
-const forgotSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Please enter a valid email')
-    .required('Email is required'),
+const resetSchema = Yup.object().shape({
+  password: Yup.string()
+    .min(8, 'Password must be at least 8 characters')
+    .required('New password is required'),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref('password')], 'Passwords do not match')
+    .required('Please confirm your password'),
 });
 
-const ForgotPasswordScreen = ({ navigation }: any) => {
+const ResetPasswordScreen = ({ navigation }: any) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
   const formik = useFormik({
-    initialValues: { email: '' },
-    validationSchema: forgotSchema,
+    initialValues: { password: '', confirmPassword: '' },
+    validationSchema: resetSchema,
     onSubmit: async values => {
       try {
-        const { error } = await supabase.auth.resetPasswordForEmail(
-          values.email,
-        );
+        const { error } = await supabase.auth.updateUser({
+          password: values.password,
+        });
         if (error) throw error;
         Toast.show({
           type: 'success',
-          text1: 'OTP Sent! ✉️',
-          text2: 'Please check your email for the 8-digit code.',
+          text1: 'Password Updated! 🔐',
+          text2: 'You can now log in with your new password.',
         });
-        navigation.navigate('VerifyOtp', { email: values.email });
+        // Sign out and go back to Login so they log in fresh
+        await supabase.auth.signOut();
+        setTimeout(() => navigation.replace('Login'), 2000);
       } catch (error: any) {
         Toast.show({ type: 'error', text1: 'Error', text2: error.message });
       }
@@ -64,24 +71,41 @@ const ForgotPasswordScreen = ({ navigation }: any) => {
               keyboardShouldPersistTaps="handled"
             >
               <View style={styles.header}>
-                <Text style={styles.title}>Forgot Password?</Text>
+                <Text style={styles.title}>Set New Password</Text>
                 <Text style={styles.subtitle}>
-                  Enter your email and we'll send you a reset link
+                  Enter a strong new password for your account
                 </Text>
               </View>
 
               <View style={styles.formContainer}>
                 <View style={styles.inputWrapper}>
-                  <Text style={styles.inputLabel}>Email</Text>
+                  <Text style={styles.inputLabel}>New Password</Text>
                   <Input
                     label=""
-                    value={formik.values.email}
-                    onChangeText={formik.handleChange('email')}
-                    placeholder="Enter your email"
-                    keyboardType="email-address"
+                    value={formik.values.password}
+                    onChangeText={formik.handleChange('password')}
+                    placeholder="Enter new password"
+                    secureTextEntry={!showPassword}
                     error={
-                      formik.touched.email && formik.errors.email
-                        ? formik.errors.email
+                      formik.touched.password && formik.errors.password
+                        ? formik.errors.password
+                        : undefined
+                    }
+                  />
+                </View>
+
+                <View style={styles.inputWrapper}>
+                  <Text style={styles.inputLabel}>Confirm Password</Text>
+                  <Input
+                    label=""
+                    value={formik.values.confirmPassword}
+                    onChangeText={formik.handleChange('confirmPassword')}
+                    placeholder="Confirm new password"
+                    secureTextEntry={!showConfirm}
+                    error={
+                      formik.touched.confirmPassword &&
+                      formik.errors.confirmPassword
+                        ? formik.errors.confirmPassword
                         : undefined
                     }
                   />
@@ -90,18 +114,11 @@ const ForgotPasswordScreen = ({ navigation }: any) => {
                 <View style={styles.buttonSpacing} />
 
                 <Button
-                  title="Send Reset Link"
+                  title="Update Password"
                   onPress={() => formik.handleSubmit()}
                   loading={formik.isSubmitting}
                 />
               </View>
-
-              <TouchableOpacity
-                style={styles.backButton}
-                onPress={() => navigation.goBack()}
-              >
-                <Text style={styles.backText}>← Back to Login</Text>
-              </TouchableOpacity>
             </ScrollView>
           </KeyboardAvoidingView>
         </SafeWrapper>
@@ -133,10 +150,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: spacing.xl,
   },
-  emoji: {
-    fontSize: 50,
-    marginBottom: spacing.md,
-  },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
@@ -164,7 +177,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   inputWrapper: {
-    marginBottom: -10,
+    marginBottom: spacing.sm,
   },
   buttonSpacing: {
     height: spacing.sm,
@@ -179,16 +192,6 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 1,
   },
-  backButton: {
-    alignItems: 'center',
-    marginTop: spacing.xl,
-  },
-  backText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-    textDecorationLine: 'underline',
-  },
 });
 
-export default ForgotPasswordScreen;
+export default ResetPasswordScreen;

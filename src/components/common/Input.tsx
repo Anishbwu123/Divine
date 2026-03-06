@@ -2,7 +2,6 @@ import React from 'react';
 import { View, TextInput, Text, StyleSheet } from 'react-native';
 import { colors, spacing } from '../../theme';
 
-
 interface InputProps {
   label: string;
   value: string;
@@ -10,6 +9,7 @@ interface InputProps {
   placeholder?: string;
   secureTextEntry?: boolean;
   keyboardType?: 'default' | 'email-address' | 'numeric';
+  maxLength?: number;
   error?: string;
 }
 
@@ -20,6 +20,7 @@ const Input: React.FC<InputProps> = ({
   placeholder,
   secureTextEntry = false,
   keyboardType = 'default',
+  maxLength,
   error,
 }) => (
   <View style={styles.container}>
@@ -32,6 +33,7 @@ const Input: React.FC<InputProps> = ({
       placeholderTextColor={colors.textLight}
       secureTextEntry={secureTextEntry}
       keyboardType={keyboardType}
+      maxLength={maxLength}
       autoCapitalize="none"
     />
     {error && <Text style={styles.error}>{error}</Text>}

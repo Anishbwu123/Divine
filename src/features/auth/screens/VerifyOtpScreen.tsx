@@ -1,50 +1,66 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   ImageBackground,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import { supabase } from '../../../config/supabase';
 import SafeWrapper from '../../../components/layout/SafeWrapper';
 import Input from '../../../components/common/Input';
 import Button from '../../../components/common/Button';
 import { colors, spacing } from '../../../theme';
 
-const forgotSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Please enter a valid email')
-    .required('Email is required'),
-});
+const VerifyOtpScreen = ({ navigation, route }: any) => {
+  const email = route.params?.email || '';
+  const [token, setToken] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-const ForgotPasswordScreen = ({ navigation }: any) => {
-  const formik = useFormik({
-    initialValues: { email: '' },
-    validationSchema: forgotSchema,
-    onSubmit: async values => {
-      try {
-        const { error } = await supabase.auth.resetPasswordForEmail(
-          values.email,
-        );
-        if (error) throw error;
-        Toast.show({
-          type: 'success',
-          text1: 'OTP Sent! ✉️',
-          text2: 'Please check your email for the 8-digit code.',
-        });
-        navigation.navigate('VerifyOtp', { email: values.email });
-      } catch (error: any) {
-        Toast.show({ type: 'error', text1: 'Error', text2: error.message });
-      }
-    },
-  });
+  const handleVerify = async () => {
+    if (token.length < 6) {
+      Toast.show({
+        type: 'error',
+        text1: 'Invalid Code',
+        text2: 'Please enter a valid 8-digit OTP',
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email,
+        token,
+        type: 'recovery',
+      });
+
+      if (error) throw error;
+
+      Toast.show({
+        type: 'success',
+        text1: 'Verified! ✨',
+        text2: 'OTP verified successfully. You can now reset your password.',
+      });
+
+      // Navigate to ResetPassword after successful verification
+      navigation.replace('ResetPassword');
+    } catch (error: any) {
+      Toast.show({ type: 'error', text1: 'Error', text2: error.message });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const maskEmail = (email: string): string => {
+    const [username, domain] = email.split('@');
+    const maskedUsername =
+      username.slice(0, 2) + '*'.repeat(username.length - 2);
+    return `${maskedUsername}@${domain}`;
+  };
 
   return (
     <ImageBackground
@@ -64,44 +80,44 @@ const ForgotPasswordScreen = ({ navigation }: any) => {
               keyboardShouldPersistTaps="handled"
             >
               <View style={styles.header}>
-                <Text style={styles.title}>Forgot Password?</Text>
+                <Text style={styles.title}>Enter OTP</Text>
                 <Text style={styles.subtitle}>
-                  Enter your email and we'll send you a reset link
+                  We sent an 6-digit verification code to
+                  {'\n'}
+                  <Text style={styles.emailText}>{maskEmail(email)}</Text>
                 </Text>
               </View>
 
               <View style={styles.formContainer}>
                 <View style={styles.inputWrapper}>
-                  <Text style={styles.inputLabel}>Email</Text>
+                  <Text style={styles.inputLabel}>OTP Code</Text>
                   <Input
                     label=""
-                    value={formik.values.email}
-                    onChangeText={formik.handleChange('email')}
-                    placeholder="Enter your email"
-                    keyboardType="email-address"
-                    error={
-                      formik.touched.email && formik.errors.email
-                        ? formik.errors.email
-                        : undefined
-                    }
+                    value={token}
+                    onChangeText={setToken}
+                    placeholder="Enter 8-digit code"
+                    keyboardType="numeric"
+                    maxLength={8}
                   />
                 </View>
 
                 <View style={styles.buttonSpacing} />
 
                 <Button
-                  title="Send Reset Link"
-                  onPress={() => formik.handleSubmit()}
-                  loading={formik.isSubmitting}
+                  title="Verify OTP"
+                  onPress={handleVerify}
+                  loading={isLoading}
                 />
               </View>
 
-              <TouchableOpacity
-                style={styles.backButton}
-                onPress={() => navigation.goBack()}
-              >
-                <Text style={styles.backText}>← Back to Login</Text>
-              </TouchableOpacity>
+              <View style={styles.backButton}>
+                <Text
+                  style={styles.backText}
+                  onPress={() => navigation.goBack()}
+                >
+                  ← Back
+                </Text>
+              </View>
             </ScrollView>
           </KeyboardAvoidingView>
         </SafeWrapper>
@@ -133,10 +149,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: spacing.xl,
   },
-  emoji: {
-    fontSize: 50,
-    marginBottom: spacing.md,
-  },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
@@ -154,6 +166,11 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
+    lineHeight: 22,
+  },
+  emailText: {
+    fontWeight: 'bold',
+    color: '#FFFFFF',
   },
   formContainer: {
     marginTop: spacing.lg,
@@ -191,4 +208,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ForgotPasswordScreen;
+export default VerifyOtpScreen;
