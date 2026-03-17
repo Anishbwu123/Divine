@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text, StyleSheet, View } from 'react-native'; // Added View and StyleSheet
+import { Text, StyleSheet, View, Image } from 'react-native'; // Added View and StyleSheet
 import { colors } from '../theme'; // Assuming spacing is in your theme
 import HomeScreen from '../features/home/screens/HomeScreen';
 import BookmarksScreen from '../features/bookmark/screens/BookmarkScreen';
@@ -25,7 +25,11 @@ const BottomTabs = () => (
       options={{
         tabBarIcon: ({ focused }) => (
           <View style={[styles.iconContainer, focused && styles.activeIconContainer]}>
-            <Text style={{ fontSize: 20, color: focused ? '#FFF' : '#000' }}>🏠</Text>
+           <Image
+              source={require('../assets/Images/home.png')}
+              style={{ height: '50%', width: '50%' }}
+              resizeMode="contain"
+            />
           </View>
         ),
         // This hides the label when active to mimic the "circle only" look in your image
@@ -38,7 +42,11 @@ const BottomTabs = () => (
       options={{
         tabBarIcon: ({ focused }) => (
           <View style={[styles.iconContainer, focused && styles.activeIconContainer]}>
-             <Text style={{ fontSize: 20 }}>🧭</Text>
+            <Image
+              source={require('../assets/Images/compass.png')}
+              style={{ height: '50%', width: '50%' }}
+              resizeMode="contain"
+            />
           </View>
         ),
         tabBarLabel: ({ focused }) => focused ? null : <Text style={styles.labelText}>Explore</Text>
@@ -50,7 +58,11 @@ const BottomTabs = () => (
       options={{
         tabBarIcon: ({ focused }) => (
           <View style={[styles.iconContainer, focused && styles.activeIconContainer]}>
-            <Text style={{ fontSize: 20 }}>👤</Text>
+            <Image
+              source={require('../assets/Images/profile.png')}
+              style={{ height: '50%', width: '50%' }}
+              resizeMode="contain"
+            />
           </View>
         ),
         tabBarLabel: ({ focused }) => focused ? null : <Text style={styles.labelText}>Profile</Text>
@@ -75,6 +87,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     // Elevation for Android
     elevation: 5,
+    // width:'90%',
     borderTopWidth: 0, // Removes the default line
     paddingHorizontal: 10,
   },

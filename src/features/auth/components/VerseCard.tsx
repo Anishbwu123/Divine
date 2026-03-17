@@ -7,6 +7,7 @@ import {
   LayoutAnimation,
   Platform,
   UIManager,
+  Image,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { ChalisaVerse } from '../../../types';
@@ -94,9 +95,10 @@ const VerseCard: React.FC<Props> = ({ verse, isBookmarked, onBookmark }) => {
         )}
 
         {/* Tap hint */}
-        <Text style={styles.tapHint}>
-          {expanded ? '▲ Collapse' : '▼ Tap for meaning'}
-        </Text>
+        <View style={styles.tapHint}>
+          {expanded ? <Image source={require('../../../assets/Images/upload.png')} resizeMode='contain' style={{ height: '22%', width: '22%' }} />
+            : <Image source={require('../../../assets/Images/down-arrow.png')} resizeMode='contain' style={{ height: '28%', width: '28%' }} />}
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -149,10 +151,9 @@ const styles = StyleSheet.create({
   },
   expandedText: { fontSize: 14, lineHeight: 22, color: colors.textSecondary },
   tapHint: {
-    fontSize: 11,
-    color: colors.textLight,
-    textAlign: 'center',
-    marginTop: 12,
+   justifyContent:'center',
+  //  marginTop:15,
+   alignItems:"center"
   },
 });
 

@@ -27,7 +27,7 @@ const BookmarksScreen = () => {
   return (
     <SafeWrapper>
       <View style={styles.header}>
-        <Text style={styles.title}>⭐ My Bookmarks</Text>
+        <Text style={styles.title}>My Bookmarks</Text>
         <Text style={styles.count}>{bookmarkedVerses.length} saved</Text>
       </View>
 

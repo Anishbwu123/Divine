@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet, Alert, Image } from 'react-native';
 
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { logoutUser } from '../../auth/authSlice';
@@ -31,12 +31,14 @@ const ProfileScreen = () => {
         {/* Avatar */}
         <View style={styles.avatarCircle}>
           <Text style={styles.avatarText}>
-            {user?.full_name?.charAt(0)?.toUpperCase() || '🙏'}
+            {!user?.full_name?.charAt(0)?.toUpperCase() ||
+                <Image source={require('../../../assets/Images/user.png')} resizeMode='contain' style={{ height: '50%', width: '50%' }} />}
+
           </Text>
         </View>
 
         <Text style={styles.name}>{user?.full_name || 'Devotee'}</Text>
-        <Text style={styles.email}>{user?.email}</Text>
+        <Text style={styles.email}>{user?.email || 'Not available'}</Text>
 
         {/* Stats */}
         <View style={styles.statsRow}>
@@ -97,7 +99,7 @@ const styles = StyleSheet.create({
   statNumber: { fontSize: 22, fontWeight: 'bold', color: colors.primary },
   statLabel: { fontSize: 12, color: colors.textSecondary, marginTop: 4 },
   logoutContainer: {
-    marginTop: 'auto',
+    marginTop: '85%',
     marginBottom: spacing.xl,
     width: '80%',
   },
