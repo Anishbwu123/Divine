@@ -33,6 +33,7 @@ const BookmarksScreen = () => {
 
       <FlatList
         data={bookmarkedVerses}
+        showsVerticalScrollIndicator={false}
         keyExtractor={item => item.id.toString()}
         renderItem={({ item }) => (
           <VerseCard
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
   },
   title: { fontSize: 22, fontWeight: 'bold', color: colors.textPrimary },
   count: { fontSize: 14, color: colors.textSecondary },
-  list: { paddingBottom: spacing.xxl },
+  list: { paddingBottom: 80 },
   emptyList: { flex: 1 },
   empty: {
     flex: 1,

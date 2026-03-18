@@ -25,7 +25,7 @@ const BottomTabs = () => (
       options={{
         tabBarIcon: ({ focused }) => (
           <View style={[styles.iconContainer, focused && styles.activeIconContainer]}>
-           <Image
+            <Image
               source={require('../assets/Images/home.png')}
               style={{ height: '50%', width: '50%' }}
               resizeMode="contain"
@@ -87,7 +87,6 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     // Elevation for Android
     elevation: 5,
-    // width:'90%',
     borderTopWidth: 0, // Removes the default line
     paddingHorizontal: 10,
   },

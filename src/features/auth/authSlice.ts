@@ -20,6 +20,18 @@ export const logoutUser = createAsyncThunk('auth/logout', async () => {
   await authService.logout();
 });
 
+export const updateUserName = createAsyncThunk(
+  'auth/updateUserName',
+  async (name: string, thunkAPI) => {
+    try {
+      const user = await authService.updateProfile(name);
+      return { full_name: user?.user_metadata?.full_name };
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
 // State
 interface AuthState {
   user: UserProfile | null;
@@ -56,6 +68,11 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
+      })
+      .addCase(updateUserName.fulfilled, (state, action) => {
+        if (state.user) {
+          state.user.full_name = action.payload.full_name;
+        }
       })
      
       .addCase(logoutUser.fulfilled, (state) => {

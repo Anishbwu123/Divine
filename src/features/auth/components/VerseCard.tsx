@@ -95,10 +95,9 @@ const VerseCard: React.FC<Props> = ({ verse, isBookmarked, onBookmark }) => {
         )}
 
         {/* Tap hint */}
-        <View style={styles.tapHint}>
-          {expanded ? <Image source={require('../../../assets/Images/upload.png')} resizeMode='contain' style={{ height: '22%', width: '22%' }} />
-            : <Image source={require('../../../assets/Images/down-arrow.png')} resizeMode='contain' style={{ height: '28%', width: '28%' }} />}
-        </View>
+        <Text style={styles.tapHint}>
+          {expanded ? '▲ Collapse' : '▼ Tap for meaning'}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -151,9 +150,10 @@ const styles = StyleSheet.create({
   },
   expandedText: { fontSize: 14, lineHeight: 22, color: colors.textSecondary },
   tapHint: {
-   justifyContent:'center',
-  //  marginTop:15,
-   alignItems:"center"
+    fontSize: 11,
+    color: colors.textLight,
+    textAlign: 'center',
+    marginTop: 12,
   },
 });
 

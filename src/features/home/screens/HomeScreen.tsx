@@ -11,9 +11,44 @@ import { useAppSelector } from '../../../store/hooks';
 import SafeWrapper from '../../../components/layout/SafeWrapper';
 import { colors, spacing } from '../../../theme';
 
+const DAILY_VERSES = [
+  {
+    hindi: "जय हनुमान ज्ञान गुन सागर।\nजय कपीस तिहुं लोक उजागर॥",
+    english: "Victory to Hanuman, Ocean of wisdom and virtue.\nVictory to the Lord of Monkeys, illuminating the three worlds."
+  },
+  {
+    hindi: "राम दूत अतुलित बल धामा।\nअंजनि पुत्र पवनसुत नामा॥",
+    english: "Messenger of Rama, repository of immeasurable strength.\nSon of Anjani, known as the son of the Wind."
+  },
+  {
+    hindi: "महाबीर बिक्रम बजरंगी।\nकुमति निवार सुमति के संगी॥",
+    english: "Great hero, with a body as hard as a thunderbolt.\nRemover of bad intellect, companion of good wisdom."
+  },
+  {
+    hindi: "कंचन बरन बिराज सुबेसा।\nकानन कुंडल कुंचित केसा॥",
+    english: "Golden colored, splendidly attired.\nWith ear-rings and curly hair."
+  },
+  {
+    hindi: "हाथ बज्र औ ध्वजा बिराजै।\nकांधे मूंज जनेऊ साजै॥",
+    english: "Holding a thunderbolt and a flag in hands.\nWith a sacred thread of munja grass adorning the shoulder."
+  },
+  {
+    hindi: "संकर सुवन केसरीनंदन।\nतेज प्रताप महा जग बंदन॥",
+    english: "Incarnation of Shiva, son of Kesari.\nYour great glory is revered by the whole world."
+  },
+  {
+    hindi: "विद्यावान गुनी अति चातुर।\nराम काज करिबे को आतुर॥",
+    english: "Full of wisdom, virtuous, and highly clever.\nAlways eager to accomplish Lord Rama's tasks."
+  }
+];
+
 const HomeScreen = ({ navigation }: any) => {
   const user = useAppSelector(state => state.auth.user);
   const { lastReadVerseIndex } = useAppSelector(state => state.chalisa);
+
+  // Get current day of week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+  const currentDayIndex = new Date().getDay();
+  const verseOfTheDay = DAILY_VERSES[currentDayIndex];
 
   return (
     <SafeWrapper>
@@ -59,31 +94,29 @@ const HomeScreen = ({ navigation }: any) => {
 
           <TouchableOpacity
             style={styles.actionCard}
-            onPress={() => navigation.navigate('Bookmarks')}
+            onPress={() => navigation.navigate('Explore')}
           >
             <Text style={styles.actionEmoji}>⭐</Text>
             <Text style={styles.actionText}>Bookmarks</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.actionCard}
             onPress={() => navigation.navigate('Settings')}
           >
             <Text style={styles.actionEmoji}>⚙️</Text>
             <Text style={styles.actionText}>Settings</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         {/* Daily Verse */}
         <View style={styles.dailyCard}>
           <Text style={styles.dailyLabel}>🪷 Verse of the Day</Text>
           <Text style={styles.dailyHindi}>
-            मनोजवं मारुततुल्यवेगं{'\n'}
-            जितेन्द्रियं बुद्धिमतां वरिष्ठम्
+            {verseOfTheDay.hindi}
           </Text>
           <Text style={styles.dailyEnglish}>
-            Swift as the mind, fast as the wind, master of senses, supreme among
-            the wise.
+            {verseOfTheDay.english}
           </Text>
         </View>
       </ScrollView>
