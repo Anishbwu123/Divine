@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "805146454715",
+    "project_id": "divine-c2af1",
+    "storage_bucket": "divine-c2af1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:805146454715:android:dcad94221fed95729d179e",
+        "android_client_info": {
+          "package_name": "com.divinepower"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTRR3-b85ZsoPJJEJpC8v4FoTBRRaUEvM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
